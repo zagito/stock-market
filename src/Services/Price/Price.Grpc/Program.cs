@@ -1,6 +1,7 @@
 using MessageBroker.MassTransit;
 using Price.Grpc.PriceGeneration;
 using Price.Grpc.Services;
+using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddGrpc();
 builder.Services.AddMessageBroker(builder.Configuration, null);
 builder.Services.AddSingleton<IPriceGeneratorService, PriceGeneratorService>();
 builder.Services.AddHostedService<PriceGeneratorWorker>();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 
 var app = builder.Build();

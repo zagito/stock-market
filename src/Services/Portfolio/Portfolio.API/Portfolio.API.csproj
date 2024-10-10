@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Utils\MessageBroker\MessageBroker.csproj" />
+    <ProjectReference Include="..\..\..\Utils\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

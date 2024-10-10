@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using MassTransit.Mediator;
+using System.Collections.Concurrent;
 
 namespace Price.Grpc.PriceGeneration
 {
@@ -18,6 +19,7 @@ namespace Price.Grpc.PriceGeneration
             {
                 ChangePrices();
             }
+
             return stocks.ToDictionary(stock => stock.Key, stock => stock.Value);
         }
 

@@ -3,6 +3,7 @@ using MessageBroker.MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Order.API.Data;
 using Price.Grpc;
+using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddCarter();
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
                options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddGrpcClient<StockPriceProtoService.StockPriceProtoServiceClient>(options =>
 {
