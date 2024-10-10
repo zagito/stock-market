@@ -1,9 +1,11 @@
-﻿namespace Price.Grpc.PriceGeneration
+﻿using MessageBroker.Events;
+
+namespace Price.Grpc.PriceGeneration
 {
     public interface IPriceGeneratorService
     {
         public decimal GetPrice(string ticker);
 
-        public Dictionary<string, decimal> GeneratePrices();
+        public StockPrice[] GeneratePrices();
     }
 }

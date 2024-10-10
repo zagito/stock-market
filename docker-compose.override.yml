@@ -64,7 +64,7 @@ services:
       - MessageBroker__Host=amqp://stock-mq:5672
       - MsageBroker__UserName=guest
       - MessageBroker__Password=guest
-      - ConnectionStrings__Database=Server=portfoliodb;Port=5433;Database=PortfolioDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=portfoliodb;Port=5432;Database=PortfolioDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
       - messagebroker
       - portfoliodb

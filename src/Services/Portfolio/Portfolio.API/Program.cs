@@ -1,4 +1,7 @@
+using Carter;
 using MessageBroker.MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Portfolio.API.Data;
 using Serilog;
 using Shared.Exceptions;
 using System.Reflection;
@@ -10,8 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var assembly = typeof(Program).Assembly;
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
 
-builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAssembly());
+builder.Services.AddMessageBroker(builder.Configuration, assembly);
+builder.Services.AddCarter();
+
+builder.Services.AddDbContext<PortfolioDbContext>(options =>
+               options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 

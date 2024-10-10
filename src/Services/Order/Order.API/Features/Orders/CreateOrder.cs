@@ -3,7 +3,9 @@ using MassTransit;
 using MediatR;
 using MessageBroker.Events;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Order.API.Contracts.Orders;
+using Order.API.Data;
 using Price.Grpc;
 using Shared.Results;
 using Shared.SQRS;
@@ -18,11 +20,13 @@ namespace Order.API.Features.Orders
         {
             private readonly IPublishEndpoint _publishEndpoint;
             private readonly StockPriceProtoService.StockPriceProtoServiceClient _stockPriceProtoServiceClient;
+            private readonly OrderDbContext _orderDbContext;
 
-            public CommandHandler(IPublishEndpoint publishEndpoint, StockPriceProtoService.StockPriceProtoServiceClient stockPriceProtoServiceClient)
+            public CommandHandler(IPublishEndpoint publishEndpoint, StockPriceProtoService.StockPriceProtoServiceClient stockPriceProtoServiceClient, OrderDbContext orderDbContext)
             {
                 _publishEndpoint = publishEndpoint;
                 _stockPriceProtoServiceClient = stockPriceProtoServiceClient;
+                _orderDbContext = orderDbContext;
             }
 
             public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
