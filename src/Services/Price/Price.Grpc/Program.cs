@@ -1,6 +1,7 @@
 using MessageBroker.MassTransit;
 using Price.Grpc.PriceGeneration;
 using Price.Grpc.Services;
+using Serilog;
 using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,12 @@ builder.Services.AddHostedService<PriceGeneratorWorker>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<PriceService>();

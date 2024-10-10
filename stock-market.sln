@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "src\Utils\Shared\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Price", "Price", "{F6DDB522-0378-432B-A4BF-EE0C22C975A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Price.Grpc", "src\Services\Price\Price.Grpc\Price.Grpc.csproj", "{03B7E098-D979-4281-9D33-E30CADAD4DBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Price.Grpc", "src\Services\Price\Price.Grpc\Price.Grpc.csproj", "{03B7E098-D979-4281-9D33-E30CADAD4DBE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ProtoShared", "src\Utils\ProtoShared\ProtoShared.shproj", "{7220EBC6-CAB7-471F-A9FA-B1FAACABB1CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,8 +74,14 @@ Global
 		{E8EBCF2D-23CC-47EF-8ACF-2BB773E8A4CC} = {B8BC99B2-8AD9-48DF-AFD6-79E63B374E44}
 		{F6DDB522-0378-432B-A4BF-EE0C22C975A4} = {C3F750F9-F0E2-417A-837C-7FE4FE0FFE9A}
 		{03B7E098-D979-4281-9D33-E30CADAD4DBE} = {F6DDB522-0378-432B-A4BF-EE0C22C975A4}
+		{7220EBC6-CAB7-471F-A9FA-B1FAACABB1CD} = {B8BC99B2-8AD9-48DF-AFD6-79E63B374E44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C53F7E74-67CB-40A0-A202-FE4C2ACB4297}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Utils\ProtoShared\ProtoShared.projitems*{03b7e098-d979-4281-9d33-e30cadad4dbe}*SharedItemsImports = 5
+		src\Utils\ProtoShared\ProtoShared.projitems*{0d9b925b-4737-44b3-bef6-b793243fae16}*SharedItemsImports = 5
+		src\Utils\ProtoShared\ProtoShared.projitems*{7220ebc6-cab7-471f-a9fa-b1faacabb1cd}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

@@ -3,6 +3,7 @@ using MessageBroker.MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Order.API.Data;
 using Price.Grpc;
+using Serilog;
 using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,9 @@ builder.Services.AddGrpcClient<StockPriceProtoService.StockPriceProtoServiceClie
     return handler;
 });
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,8 +52,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapCarter();
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
+app.MapCarter();
 
 app.Run();

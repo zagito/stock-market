@@ -1,4 +1,8 @@
-﻿namespace Price.Grpc
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Proto.Custom.Types
 {
     public partial class DecimalValue
     {

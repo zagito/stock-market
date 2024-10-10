@@ -11,4 +11,8 @@
 	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ProtoCustomTypes\" />
+  </ItemGroup>
+
 </Project>

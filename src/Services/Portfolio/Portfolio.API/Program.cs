@@ -1,4 +1,5 @@
 using MessageBroker.MassTransit;
+using Serilog;
 using Shared.Exceptions;
 using System.Reflection;
 
@@ -14,6 +15,9 @@ builder.Services.AddMessageBroker(builder.Configuration, Assembly.GetExecutingAs
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
