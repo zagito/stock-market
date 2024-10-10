@@ -54,8 +54,6 @@ namespace Price.Grpc.PriceGeneration
             {
                 if( stocks.TryGetValue(i, out decimal value))
                 {
-                    var t = rnd.NextDeciaml(0.9m, 1.11m);
-                    _logger.LogInformation("{t}", t);
                     stocks[i] = value * rnd.NextDeciaml(0.9m, 1.1m);
                 }
             });
