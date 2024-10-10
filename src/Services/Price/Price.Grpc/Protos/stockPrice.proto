@@ -1,0 +1,21 @@
+﻿
+syntax = "proto3";
+
+option csharp_namespace = "Price.Grpc";
+
+package stockPrice;
+
+import "customTypes.proto";
+
+service StockPriceProtoService {
+  rpc GetStockPrice (GettStockPriceRequest) returns (GettStockPriceResponse);
+}
+
+message GettStockPriceRequest {
+  string ticker = 1;
+}
+
+message GettStockPriceResponse {
+  string ticker = 1;
+  customTypes.DecimalValue price = 2; 
+}

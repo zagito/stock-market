@@ -1,0 +1,10 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Price.Grpc";
+
+package customTypes;
+
+message DecimalValue {
+  int64 units = 1;
+  int32 nanos = 2;
+}

@@ -1,0 +1,93 @@
+version: '3.4'
+
+services:
+  orderdb:
+    container_name: orderdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=OrderDb
+    restart: always
+    ports:
+        - "5432:5432"
+    volumes:
+      - postgres_order:/var/lib/postgresql/data/ 
+      
+  portfoliodb:
+    container_name: portfoliodb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=PortfolioDb
+    restart: always
+    ports:
+        - "5433:5432"
+    volumes:
+      - postgres_portfolio:/var/lib/postgresql/data/ 
+
+  messagebroker:
+    container_name: messagebroker
+    hostname: stock-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  order.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - MessageBroker__Host=amqp://stock-mq:5672
+      - MsageBroker__UserName=guest
+      - MessageBroker__Password=guest
+      - ConnectionStrings__Database=Server=orderdb;Port=5432;Database=OrderDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - GrpcSettings__StockPriceApiUrl=https://price.grpc:8081
+    depends_on:
+      - messagebroker
+      - orderdb
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  portfolio.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - MessageBroker__Host=amqp://stock-mq:5672
+      - MsageBroker__UserName=guest
+      - MessageBroker__Password=guest
+      - ConnectionStrings__Database=Server=portfoliodb;Port=5433;Database=PortfolioDb;User Id=postgres;Password=postgres;Include Error Detail=true
+    depends_on:
+      - messagebroker
+      - portfoliodb
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      
+  price.grpc:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - MessageBroker__Host=amqp://stock-mq:5672
+      - MsageBroker__UserName=guest
+      - MessageBroker__Password=guest
+    depends_on:
+      - messagebroker
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

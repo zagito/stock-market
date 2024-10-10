@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  orderdb:
+    image: postgres
+
+  portfoliodb:
+    image: postgres
+
+  messagebroker:
+    image: rabbitmq:management
+
+  order.api:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: src/Services/Order/Order.API/Dockerfile
+
+  portfolio.api:
+    image: ${DOCKER_REGISTRY-}portfolioapi
+    build:
+      context: .
+      dockerfile: src/Services/Portfolio/Portfolio.API/Dockerfile
+
+  price.grpc:
+    image: ${DOCKER_REGISTRY-}pricegrpc
+    build:
+      context: .
+      dockerfile: src/Services/Price/Price.Grpc/Dockerfile
+
+volumes:
+  postgres_order:
+  postgres_portfolio:
+
+
