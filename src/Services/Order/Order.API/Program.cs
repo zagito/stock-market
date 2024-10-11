@@ -1,4 +1,5 @@
 using Carter;
+using FluentValidation;
 using MessageBroker.MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Order.API.Data;
@@ -18,6 +19,8 @@ builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assemb
 
 builder.Services.AddMessageBroker(builder.Configuration, assembly);
 builder.Services.AddCarter();
+
+builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
                options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));

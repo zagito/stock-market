@@ -1,4 +1,5 @@
 ﻿using Carter;
+using FluentValidation;
 using MassTransit;
 using MediatR;
 using MessageBroker.Events;
@@ -16,21 +17,42 @@ namespace Order.API.Features.Orders
     {
         public record Command (string Ticker, int Quantity, Side Side, Guid UserId) : ICommand<Guid> {}
 
+        public class Validator : AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(c => c.Ticker).NotEmpty();
+                RuleFor(c => c.Quantity).GreaterThan(0);
+                RuleFor(c => c.Side).IsInEnum();
+            }
+        }
+
+
         internal sealed class CommandHandler : ICommandHandler<Command, Guid>
         {
             private readonly IPublishEndpoint _publishEndpoint;
             private readonly StockPriceProtoService.StockPriceProtoServiceClient _stockPriceProtoServiceClient;
             private readonly OrderDbContext _orderDbContext;
+            private readonly IValidator<Command> _validator;
 
-            public CommandHandler(IPublishEndpoint publishEndpoint, StockPriceProtoService.StockPriceProtoServiceClient stockPriceProtoServiceClient, OrderDbContext orderDbContext)
+            public CommandHandler(IPublishEndpoint publishEndpoint, StockPriceProtoService.StockPriceProtoServiceClient stockPriceProtoServiceClient, OrderDbContext orderDbContext, IValidator<Command> validator)
             {
                 _publishEndpoint = publishEndpoint;
                 _stockPriceProtoServiceClient = stockPriceProtoServiceClient;
                 _orderDbContext = orderDbContext;
+                _validator = validator;
             }
 
             public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
             {
+                var validationResult = _validator.Validate(request);
+                if (!validationResult.IsValid)
+                {
+                    return Result<Guid>.Failure(new Error(
+                        "CreateOrder.Validation",
+                        validationResult.ToString()));
+                }
+
 
                 var result = await _stockPriceProtoServiceClient.GetStockPriceAsync(new GettStockPriceRequest() { Ticker = request.Ticker }, cancellationToken: cancellationToken);
 
