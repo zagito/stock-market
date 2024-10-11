@@ -34,6 +34,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using (var scope = app.Services.CreateScope())
+    {
+        var contex = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+        contex.Database.Migrate();
+    }
 }
 
 app.UseSerilogRequestLogging();

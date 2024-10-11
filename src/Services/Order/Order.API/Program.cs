@@ -2,6 +2,7 @@ using Carter;
 using FluentValidation;
 using MessageBroker.MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Writers;
 using Order.API.Data;
 using Price.Grpc;
 using Serilog;
@@ -53,6 +54,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    //just for easy life, don`t like auto migration
+    using (var scope = app.Services.CreateScope()) 
+    {
+        var contex =  scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+        contex.Database.Migrate();
+    }
 }
 
 app.UseSerilogRequestLogging();
