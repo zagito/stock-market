@@ -1,4 +1,5 @@
-﻿using Order.API.Contracts.Orders;
+﻿using MessageBroker.Events;
+using Proto.Custom.Types;
 using System.ComponentModel.DataAnnotations;
 
 namespace Order.API.Data.Entities
@@ -11,26 +12,21 @@ namespace Order.API.Data.Entities
 
         public Side Side { get; set; }
 
+        public DateTime CreateDate { get; set; }
+
+        public DateTime? ExecuteDate { get; set; }
+
         [Required]
         [StringLength(50)]
         public required string Ticker { get; set; }
 
-        public OrderStatus Status { get; set; }
-
-        [StringLength(50)]
-        public required string StatusNormalized { get; set; }
-
+        public bool? IsSuccessful { get; set; }
 
         [StringLength(100)]
         public string? FailureReason { get; set; }
 
+        public Guid UserId { get; set; }
 
-    }
-
-    public enum OrderStatus 
-    {
-        Created,
-        Execudet,
-        Failed
+        public decimal CurrentPrice { get; set; }
     }
 }

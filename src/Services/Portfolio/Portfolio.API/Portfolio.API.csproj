@@ -30,4 +30,8 @@
     <ProjectReference Include="..\..\..\Utils\Shared\Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
 </Project>

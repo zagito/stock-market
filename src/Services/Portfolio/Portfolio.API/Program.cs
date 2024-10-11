@@ -40,4 +40,8 @@ app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
+app.MapCarter();
+
+app.UseExceptionHandler(options => { });
+
 app.Run();

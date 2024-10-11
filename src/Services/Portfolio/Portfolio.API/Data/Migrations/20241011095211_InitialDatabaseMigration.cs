@@ -16,7 +16,8 @@ namespace Portfolio.API.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Cash = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +43,6 @@ namespace Portfolio.API.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    BuyPrice = table.Column<decimal>(type: "numeric", nullable: false),
                     StockId = table.Column<Guid>(type: "uuid", nullable: false),
                     PortfolioId = table.Column<Guid>(type: "uuid", nullable: false)
                 },

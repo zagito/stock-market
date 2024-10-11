@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Carter" Version="8.1.0" />
+    <PackageReference Include="EFCore.AutomaticMigrations" Version="8.0.5" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">

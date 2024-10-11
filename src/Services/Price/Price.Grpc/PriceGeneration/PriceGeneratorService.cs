@@ -42,7 +42,7 @@ namespace Price.Grpc.PriceGeneration
             Random rnd = new Random();
             Parallel.ForEach(stockNames, (i, token) =>
             {
-                stocks.TryAdd(i, rnd.NextDeciaml(5, 10));
+                stocks.TryAdd(i, rnd.NextDeciaml(5m, 10m));
             });
         }
 
@@ -53,7 +53,7 @@ namespace Price.Grpc.PriceGeneration
             {
                 if( stocks.TryGetValue(i, out decimal value))
                 {
-                    stocks[i] = value * rnd.NextDeciaml(0.9m, 1.1m);
+                    stocks[i] = Math.Round(value * rnd.NextDeciaml(0.9m, 1.11m), 2);
                 }
             });
         }
@@ -67,7 +67,7 @@ namespace Price.Grpc.PriceGeneration
             int secondInt = (int)(second * 100);
 
             int intResult = random.Next(firstAsInt, secondInt);
-            return (decimal)intResult / 100;
+            return Math.Round((decimal)intResult / 100, 2);
         }
     }
 }

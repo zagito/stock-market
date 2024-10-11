@@ -6,13 +6,13 @@ using Portfolio.API.Data.Entities;
 
 namespace Portfolio.API.Features.StockPrices
 {
-    public class PricesChangedConsumer : IConsumer<PricesChangedEvent>
+    public class PricesChanged : IConsumer<PricesChangedEvent>
     {
 
-        private readonly ILogger<PricesChangedConsumer> _logger;
+        private readonly ILogger<PricesChanged> _logger;
         private readonly PortfolioDbContext _portfolioDbContext;
 
-        public PricesChangedConsumer(ILogger<PricesChangedConsumer> logger, PortfolioDbContext portfolioDbContext)
+        public PricesChanged(ILogger<PricesChanged> logger, PortfolioDbContext portfolioDbContext)
         {
             _logger = logger;
             _portfolioDbContext = portfolioDbContext;

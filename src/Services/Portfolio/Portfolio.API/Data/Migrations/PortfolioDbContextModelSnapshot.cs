@@ -28,12 +28,15 @@ namespace Portfolio.API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("Cash")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Portfolios", (string)null);
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("Portfolio.API.Data.Entities.PortfolioStock", b =>
@@ -41,9 +44,6 @@ namespace Portfolio.API.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<decimal>("BuyPrice")
-                        .HasColumnType("numeric");
 
                     b.Property<Guid>("PortfolioId")
                         .HasColumnType("uuid");
@@ -60,7 +60,7 @@ namespace Portfolio.API.Data.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("PortfolioStocks", (string)null);
+                    b.ToTable("PortfolioStocks");
                 });
 
             modelBuilder.Entity("Portfolio.API.Data.Entities.Stock", b =>
@@ -82,19 +82,19 @@ namespace Portfolio.API.Data.Migrations
                     b.HasIndex("Ticker")
                         .IsUnique();
 
-                    b.ToTable("Stocks", (string)null);
+                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("Portfolio.API.Data.Entities.PortfolioStock", b =>
                 {
                     b.HasOne("Portfolio.API.Data.Entities.Portfolio", "Portfolio")
-                        .WithMany()
+                        .WithMany("PortfolioStocks")
                         .HasForeignKey("PortfolioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Portfolio.API.Data.Entities.Stock", "Stock")
-                        .WithMany()
+                        .WithMany("PortfolioStocks")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -102,6 +102,16 @@ namespace Portfolio.API.Data.Migrations
                     b.Navigation("Portfolio");
 
                     b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("Portfolio.API.Data.Entities.Portfolio", b =>
+                {
+                    b.Navigation("PortfolioStocks");
+                });
+
+            modelBuilder.Entity("Portfolio.API.Data.Entities.Stock", b =>
+                {
+                    b.Navigation("PortfolioStocks");
                 });
 #pragma warning restore 612, 618
         }

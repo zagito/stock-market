@@ -3,7 +3,6 @@ using MassTransit;
 using MediatR;
 using MessageBroker.Events;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Order.API.Contracts.Orders;
 using Order.API.Data;
 using Order.API.Data.Entities;
@@ -15,9 +14,9 @@ namespace Order.API.Features.Orders
 {
     public static class CreateOrder
     {
-        public record Command (string Ticker, int Quantity, Side Side) : ICommand<decimal> {}
+        public record Command (string Ticker, int Quantity, Side Side, Guid UserId) : ICommand<Guid> {}
 
-        internal sealed class CommandHandler : ICommandHandler<Command, decimal>
+        internal sealed class CommandHandler : ICommandHandler<Command, Guid>
         {
             private readonly IPublishEndpoint _publishEndpoint;
             private readonly StockPriceProtoService.StockPriceProtoServiceClient _stockPriceProtoServiceClient;
@@ -30,39 +29,36 @@ namespace Order.API.Features.Orders
                 _orderDbContext = orderDbContext;
             }
 
-            public async Task<Result<decimal>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
             {
 
                 var result = await _stockPriceProtoServiceClient.GetStockPriceAsync(new GettStockPriceRequest() { Ticker = request.Ticker }, cancellationToken: cancellationToken);
 
                 if (result.Price <= 0) 
                 {
-                    return Result<decimal>.Failure(new Error("Error.NoStock", $"No stocks with ticker {request.Ticker} are selling"));
+                    return Result<Guid>.Failure(new Error("Error.NoStock", $"No stocks with ticker {request.Ticker} are selling"));
                 }
 
-                var orderId = Guid.NewGuid();
-
-                _orderDbContext.Orders.Add(new Data.Entities.Order
+                var order = new Data.Entities.Order
                 {
                     Ticker = request.Ticker,
-                    Id = orderId,
+                    Id = Guid.NewGuid(),
                     Quantity = request.Quantity,
+                    CurrentPrice = result.Price,
                     Side = request.Side,
-                    Status = OrderStatus.Created,
-                    StatusNormalized = OrderStatus.Created.ToString()
+                    CreateDate = DateTime.UtcNow,     
+                    UserId = request.UserId,
+                };
 
-                });
+                _orderDbContext.Orders.Add(order);
 
                 await _orderDbContext.SaveChangesAsync();
 
                 await _publishEndpoint.Publish(
-                new OrderCreatedEvent
-                {
-                    Id = orderId
-                },
-                cancellationToken);
+                    new OrderCreatedEvent(order.Id, order.UserId, order.Quantity, order.Ticker, order.CurrentPrice, order.Side == Side.Sell),
+                    cancellationToken);
 
-                return Result<decimal>.Success(result.Price);
+                return Result<Guid>.Success(order.Id);
             }
         }
     }
@@ -73,7 +69,7 @@ namespace Order.API.Features.Orders
         {
             app.MapPost("api/order/add/{userId}", async (Guid userId, [FromBody] CreateOrderRequest request, ISender sender) =>
             {
-                var command = new CreateOrder.Command(request.Ticker, request.Quantity, request.Side);
+                var command = new CreateOrder.Command(request.Ticker, request.Quantity, request.Side, userId);
 
                 var result = await sender.Send(command);
 

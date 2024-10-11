@@ -4,8 +4,6 @@
     {
         public int Quantity { get; set; }
 
-        public decimal BuyPrice { get; set; }
-
         public Guid StockId { get; set; }
 
         public Stock Stock { get; set; } = null!;

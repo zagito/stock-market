@@ -1,4 +1,6 @@
-﻿namespace Order.API.Contracts.Orders
+﻿using Order.API.Data.Entities;
+
+namespace Order.API.Contracts.Orders
 {
     public record CreateOrderRequest
     {

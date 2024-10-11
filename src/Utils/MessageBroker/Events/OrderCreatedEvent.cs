@@ -1,7 +1,4 @@
 ﻿namespace MessageBroker.Events
 {
-    public record OrderCreatedEvent
-    {
-        public Guid Id { get; set; }
-    }
+    public record OrderCreatedEvent(Guid OrderId, Guid UserId, int Quantity, string Ticker, decimal Price, bool IsSell);
 }
