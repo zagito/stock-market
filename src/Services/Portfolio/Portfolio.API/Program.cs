@@ -8,6 +8,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -20,7 +22,7 @@ builder.Services.AddMessageBroker(builder.Configuration, assembly);
 builder.Services.AddCarter();
 
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
-               options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+               options.UseNpgsql(builder.Configuration.GetConnectionString("portfoli-db")));
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -28,6 +30,8 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -22,11 +22,7 @@ public static class Extentions
             config.UsingRabbitMq((context, configurator) =>
             {
 
-                configurator.Host(new Uri(configuration["MessageBroker:Host"] ?? throw new Exception("message quemessage queue not configured")), host =>
-                {
-                    host.Username(configuration["MessageBroker:UserName"] ?? throw new Exception("message quemessage queue not configured"));
-                    host.Password(configuration["MessageBroker:Password"] ?? throw new Exception("message quemessage queue not configured"));
-                });
+                configurator.Host(configuration.GetConnectionString("stock-mq"));
                 configurator.ConfigureEndpoints(context);
             });
         });

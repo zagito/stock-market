@@ -6,6 +6,8 @@ using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddMessageBroker(builder.Configuration, null);
@@ -18,6 +20,8 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 app.UseSerilogRequestLogging();
 

@@ -10,6 +10,8 @@ using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -24,7 +26,7 @@ builder.Services.AddCarter();
 builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
-               options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+               options.UseNpgsql(builder.Configuration.GetConnectionString("order-db")));
 
 builder.Services.AddGrpcClient<StockPriceProtoService.StockPriceProtoServiceClient>(options =>
 {
@@ -48,6 +50,8 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

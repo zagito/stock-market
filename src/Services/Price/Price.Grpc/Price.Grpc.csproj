@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\aspire\stock-market.ServiceDefaults\stock-market.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\..\Utils\MessageBroker\MessageBroker.csproj" />
     <ProjectReference Include="..\..\..\Utils\Shared\Shared.csproj" />
   </ItemGroup>
