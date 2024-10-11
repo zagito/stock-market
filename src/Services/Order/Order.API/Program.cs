@@ -22,8 +22,6 @@ builder.Services.AddCarter();
 builder.Services.AddDbContext<OrderDbContext>(options =>
                options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
 builder.Services.AddGrpcClient<StockPriceProtoService.StockPriceProtoServiceClient>(options =>
 {
     options.Address = new Uri(builder.Configuration["GrpcSettings:StockPriceApiUrl"] ?? throw new Exception("Stock price api url not configured"));
@@ -39,6 +37,8 @@ builder.Services.AddGrpcClient<StockPriceProtoService.StockPriceProtoServiceClie
 
     return handler;
 });
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -57,5 +57,7 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.MapCarter();
+
+app.UseExceptionHandler(options => { });
 
 app.Run();

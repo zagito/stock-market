@@ -18,7 +18,10 @@ namespace Order.API.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Side = table.Column<int>(type: "integer", nullable: false),
-                    Ticker = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    Ticker = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    StatusNormalized = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    FailureReason = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {

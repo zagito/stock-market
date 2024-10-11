@@ -39,6 +39,10 @@
     </Protobuf>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
   <Import Project="..\..\..\Utils\ProtoShared\ProtoShared.projitems" Label="Shared" />
 
 </Project>

@@ -7,7 +7,6 @@ namespace Order.API.Data.Entities
     {
         public Guid Id { get; set; }
 
-        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
 
         public Side Side { get; set; }
@@ -15,5 +14,23 @@ namespace Order.API.Data.Entities
         [Required]
         [StringLength(50)]
         public required string Ticker { get; set; }
+
+        public OrderStatus Status { get; set; }
+
+        [StringLength(50)]
+        public required string StatusNormalized { get; set; }
+
+
+        [StringLength(100)]
+        public string? FailureReason { get; set; }
+
+
+    }
+
+    public enum OrderStatus 
+    {
+        Created,
+        Execudet,
+        Failed
     }
 }

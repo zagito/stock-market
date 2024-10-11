@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Order.API.Contracts.Orders;
 using Order.API.Data;
+using Order.API.Data.Entities;
 using Price.Grpc;
 using Shared.Results;
 using Shared.SQRS;
@@ -14,9 +15,9 @@ namespace Order.API.Features.Orders
 {
     public static class CreateOrder
     {
-        public record Command (string Ticker, int Quantity, Side Side) : ICommand<Guid> {}
+        public record Command (string Ticker, int Quantity, Side Side) : ICommand<decimal> {}
 
-        internal sealed class CommandHandler : ICommandHandler<Command, Guid>
+        internal sealed class CommandHandler : ICommandHandler<Command, decimal>
         {
             private readonly IPublishEndpoint _publishEndpoint;
             private readonly StockPriceProtoService.StockPriceProtoServiceClient _stockPriceProtoServiceClient;
@@ -29,12 +30,30 @@ namespace Order.API.Features.Orders
                 _orderDbContext = orderDbContext;
             }
 
-            public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<decimal>> Handle(Command request, CancellationToken cancellationToken)
             {
 
                 var result = await _stockPriceProtoServiceClient.GetStockPriceAsync(new GettStockPriceRequest() { Ticker = request.Ticker }, cancellationToken: cancellationToken);
 
+                if (result.Price <= 0) 
+                {
+                    return Result<decimal>.Failure(new Error("Error.NoStock", $"No stocks with ticker {request.Ticker} are selling"));
+                }
+
                 var orderId = Guid.NewGuid();
+
+                _orderDbContext.Orders.Add(new Data.Entities.Order
+                {
+                    Ticker = request.Ticker,
+                    Id = orderId,
+                    Quantity = request.Quantity,
+                    Side = request.Side,
+                    Status = OrderStatus.Created,
+                    StatusNormalized = OrderStatus.Created.ToString()
+
+                });
+
+                await _orderDbContext.SaveChangesAsync();
 
                 await _publishEndpoint.Publish(
                 new OrderCreatedEvent
@@ -43,7 +62,7 @@ namespace Order.API.Features.Orders
                 },
                 cancellationToken);
 
-                return Result<Guid>.Success(Guid.NewGuid());
+                return Result<decimal>.Success(result.Price);
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using MassTransit.Mediator;
-using MessageBroker.Events;
+﻿using MessageBroker.Events;
 using System.Collections.Concurrent;
 
 namespace Price.Grpc.PriceGeneration
