@@ -7,12 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
 	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ProtoCustomTypes\" />
   </ItemGroup>
 
 </Project>

@@ -2,10 +2,10 @@ using Carter;
 using FluentValidation;
 using MessageBroker.MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Writers;
 using Order.API.Data;
 using Price.Grpc;
 using Serilog;
+using Shared.Behaviors;
 using Shared.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,12 +18,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var assembly = typeof(Program).Assembly;
-builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
+
+builder.Services.AddValidatorsFromAssembly(assembly);
+
+builder.Services.AddMediatR(config => 
+{
+    config.RegisterServicesFromAssembly(assembly);
+    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
 builder.Services.AddMessageBroker(builder.Configuration, assembly);
 builder.Services.AddCarter();
-
-builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
                options.UseNpgsql(builder.Configuration.GetConnectionString("order-db")));
@@ -59,11 +64,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     //just for easy life, don`t like auto migration
-    using (var scope = app.Services.CreateScope()) 
-    {
-        var contex =  scope.ServiceProvider.GetRequiredService<OrderDbContext>();
-        contex.Database.Migrate();
-    }
+    //using (var scope = app.Services.CreateScope()) 
+    //{
+    //    var contex =  scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    //    contex.Database.Migrate();
+    //}
 }
 
 app.UseSerilogRequestLogging();
