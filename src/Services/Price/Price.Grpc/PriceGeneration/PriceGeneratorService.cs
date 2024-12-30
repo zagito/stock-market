@@ -14,21 +14,20 @@ namespace Price.Grpc.PriceGeneration
 
         private static ConcurrentDictionary<string, decimal> stocks = new();
 
-        private string[] stockNames = ["ACRE", "ACT", "AE", "AER", "CDT", "CEAD", "CENX", "DNMR", "DOCN", "FTS"];
+        private string[] stockNames = { "ACRE", "ACT", "AE", "AER", "CDT", "CEAD", "CENX", "DNMR", "DOCN", "FTS" };
 
-        public  StockPrice[] GeneratePrices()
+        public StockPrice[] GeneratePrices()
         {
             if (!stocks.Any())
             {
                 SetPrices();
             }
-            else 
+            else
             {
                 ChangePrices();
             }
 
             return stocks.Select(pair => new StockPrice(pair.Key, pair.Value)).ToArray();
-
         }
 
         public decimal GetPrice(string ticker)
@@ -37,31 +36,31 @@ namespace Price.Grpc.PriceGeneration
             return price;
         }
 
-        private void SetPrices() 
+        private void SetPrices()
         {
-            Random rnd = new Random();
+            Random rnd = new();
             Parallel.ForEach(stockNames, (i, token) =>
             {
-                stocks.TryAdd(i, rnd.NextDeciaml(5m, 10m));
+                stocks.TryAdd(i, rnd.NextDecimal(5m, 10m));
             });
         }
 
-        private void ChangePrices() 
+        private void ChangePrices()
         {
-            Random rnd = new Random();
+            Random rnd = new();
             Parallel.ForEach(stockNames, (i, token) =>
             {
-                if( stocks.TryGetValue(i, out decimal value))
+                if (stocks.TryGetValue(i, out decimal value))
                 {
-                    stocks[i] = Math.Round(value * rnd.NextDeciaml(0.9m, 1.11m), 2);
+                    stocks[i] = Math.Round(value * rnd.NextDecimal(0.9m, 1.11m), 2);
                 }
             });
         }
     }
 
-    public static class RandomExtension 
+    public static class RandomExtension
     {
-        public static decimal NextDeciaml(this Random random, decimal first, decimal second) 
+        public static decimal NextDecimal(this Random random, decimal first, decimal second)
         {
             int firstAsInt = (int)(first * 100);
             int secondInt = (int)(second * 100);

@@ -3,6 +3,7 @@ using MessageBroker.Events;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.API.Data;
 using Portfolio.API.Data.Entities;
+using FlexLabs.EntityFrameworkCore.Upsert;
 
 namespace Portfolio.API.Features.StockPrices
 {
@@ -37,6 +38,13 @@ namespace Portfolio.API.Features.StockPrices
                     Ticker = stockPrice.Ticker
                 });
             }
+
+            await _portfolioDbContext.Stocks
+                        .UpsertRange(stocks)
+                        .On(x => x.Ticker)
+                        .NoUpdate()
+                        .RunAsync();
+
 
             await _portfolioDbContext.BulkMergeAsync(stocks, options =>
             {
