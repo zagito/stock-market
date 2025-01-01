@@ -48,9 +48,7 @@ namespace Order.API.Features.Orders
                 var validationResult = _validator.Validate(request);
                 if (!validationResult.IsValid)
                 {
-                    return Result<Guid>.Failure(new Error(
-                        "CreateOrder.Validation",
-                        validationResult.ToString()));
+                    return new Error("CreateOrder.Validation", validationResult.ToString());
                 }
 
 
@@ -58,7 +56,7 @@ namespace Order.API.Features.Orders
 
                 if (result.Price <= 0) 
                 {
-                    return Result<Guid>.Failure(new Error("Error.NoStock", $"No stocks with ticker {request.Ticker} are selling"));
+                    return new Error("Error.NoStock", $"No stocks with ticker {request.Ticker} are selling");
                 }
 
                 var order = new Data.Entities.Order
@@ -80,7 +78,7 @@ namespace Order.API.Features.Orders
                     new OrderCreatedEvent(order.Id, order.UserId, order.Quantity, order.Ticker, order.CurrentPrice, order.Side == Side.Sell),
                     cancellationToken);
 
-                return Result<Guid>.Success(order.Id);
+                return order.Id;
             }
         }
     }

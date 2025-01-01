@@ -34,10 +34,10 @@ namespace Portfolio.API.Features.Portfolios
 
                 if (userPortfolio == null)
                 {
-                    return Result<UserPortfolioResponse>.Failure(new Error("User.NotFound", $"User with id: {request.UserId} has no profile"));
+                    return new Error("User.NotFound", $"User with id: {request.UserId} has no profile");
                 }
 
-                return Result<UserPortfolioResponse>.Success(new UserPortfolioResponse(userPortfolio.UserId, userPortfolio.PortfolioId, userPortfolio.Cash, userPortfolio.SotckMoney));
+                return new UserPortfolioResponse(userPortfolio.UserId, userPortfolio.PortfolioId, userPortfolio.Cash, userPortfolio.SotckMoney);
             }
         }
 

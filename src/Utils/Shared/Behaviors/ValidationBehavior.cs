@@ -43,7 +43,7 @@ namespace Shared.Behaviors
         private static TResult Create<TResult>(Error[] errors)
             where TResult : Result<TResult>
         {
-            return (Result<TResult>.Failure(errors.First()) as TResult)!;
+            return (errors.First() as TResult)!;
         }
     }
 }

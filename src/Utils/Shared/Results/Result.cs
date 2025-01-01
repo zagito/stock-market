@@ -19,8 +19,7 @@
 
         public Error? Error { get; }
 
+        public static implicit operator Result(Error error) => new(false, error);
         public static Result Success() => new(true);
-
-        public static Result Failure(Error error) => new(false, error);
     }
 }

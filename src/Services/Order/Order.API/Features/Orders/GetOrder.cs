@@ -37,20 +37,16 @@ namespace Order.API.Features.Orders
                 var validationResult = _validator.Validate(request);
                 if (!validationResult.IsValid)
                 {
-                    return Result<OrderResponse>.Failure(new Error(
-                        "GetOrder.Validation",
-                        validationResult.ToString()));
+                    return new Error("GetOrder.Validation", validationResult.ToString());
                 }
 
                 var order = await GetOrderById(request.OrderId, cancellationToken);
                 if (order == null)
                 {
-                    return Result<OrderResponse>.Failure(new Error(
-                        "Error.OrderNotFound",
-                        $"Order with Id: {request.OrderId} not found"));
+                    return new Error("Error.OrderNotFound", $"Order with Id: {request.OrderId} not found");
                 }
 
-                return Result<OrderResponse>.Success(MapToOrderResponse(order));
+                return MapToOrderResponse(order);
             }
 
             private async Task<Data.Entities.Order?> GetOrderById(Guid orderId, CancellationToken cancellationToken)

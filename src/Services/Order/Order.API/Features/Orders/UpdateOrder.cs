@@ -42,9 +42,7 @@ namespace Order.API.Features.Orders
                 var validationResult = _validator.Validate(request);
                 if (!validationResult.IsValid)
                 {
-                    return Result<Guid>.Failure(new Error(
-                        "UpdateOrder.Validation",
-                        validationResult.ToString()));
+                    return new Error("UpdateOrder.Validation", validationResult.ToString());
                 }
 
                 var order = await _orderDbContext.Orders
@@ -52,7 +50,7 @@ namespace Order.API.Features.Orders
 
                 if (order == null)
                 {
-                    return Result<Guid>.Failure(new Error("Error.OrderNotFound", $"Order with Id: {request.OrderId} not found"));
+                    return new Error("Error.OrderNotFound", $"Order with Id: {request.OrderId} not found");
                 }
 
                 order.Ticker = request.Ticker;
@@ -62,7 +60,7 @@ namespace Order.API.Features.Orders
 
                 await _orderDbContext.SaveChangesAsync(cancellationToken);
 
-                return Result<Guid>.Success(order.Id);
+                return order.Id;
             }
         }
     }
